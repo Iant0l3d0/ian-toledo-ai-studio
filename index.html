@@ -815,6 +815,9 @@
        Ahora se ve entero, con barras negras a los costados. Dentro de la tarjeta no cambia nada. */
     video:fullscreen { object-fit: contain !important; background: #000 !important; }
     video:-webkit-full-screen { object-fit: contain !important; background: #000 !important; }
+  
+    /* Videos de YouTube dentro de las tarjetas */
+    .media iframe { width:100%; height:100%; border:0; display:block; background:#000; }
   </style>
 </head>
 <body>
@@ -880,9 +883,9 @@
           <p>Del material original a una versión digital capaz de protagonizar nuevos videos. Acá vamos a mostrar el antes y el resultado.</p>
         </div>
         <div class="reel-grid">
-          <article class="reel-card reveal"><div class="media" data-video="videos/reel-01.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 01</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Clon digital</h3><p>Presentación a cámara</p></div><span class="pill">01</span></div></article>
-          <article class="reel-card reveal"><div class="media" data-video="videos/reel-02.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 02</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Contenido de valor</h3><p>Edición dinámica</p></div><span class="pill">02</span></div></article>
-          <article class="reel-card reveal"><div class="media" data-video="videos/reel-03.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 03</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Adaptación de contenido</h3><p>Formato para redes</p></div><span class="pill">03</span></div></article>
+          <article class="reel-card reveal"><div class="media" data-youtube="EDPsDL2TYDM"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 01</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Clon digital</h3><p>Presentación a cámara</p></div><span class="pill">01</span></div></article>
+          <article class="reel-card reveal"><div class="media" data-youtube="zIm50Socc8E"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 02</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Contenido de valor</h3><p>Edición dinámica</p></div><span class="pill">02</span></div></article>
+          <article class="reel-card reveal"><div class="media" data-youtube="wF7gvovuMyA"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 03</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Adaptación de contenido</h3><p>Formato para redes</p></div><span class="pill">03</span></div></article>
         </div>
       </section>
 
@@ -893,11 +896,11 @@
         </div>
         <div class="project-grid">
           <article class="project reveal">
-            <div class="media" data-video="videos/avatar-01.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 01</strong><small>Agregar video vertical</small></div></div>
+            <div class="media" data-youtube="A_H0nwBmHEs"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 01</strong><small>Agregar video vertical</small></div></div>
             <div class="project-info"><div><h3>Presentación de producto</h3><p>Avatar virtual · Video UGC</p></div><span class="pill">AVATAR IA</span></div>
           </article>
           <article class="project reveal">
-            <div class="media" data-video="videos/avatar-02.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 02</strong><small>Agregar video vertical</small></div></div>
+            <div class="media" data-youtube="XmBd3ebXrv4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 02</strong><small>Agregar video vertical</small></div></div>
             <div class="project-info"><div><h3>Contenido para marca</h3><p>Avatar virtual · Video social</p></div><span class="pill">AVATAR IA</span></div>
           </article>
         </div>
@@ -933,6 +936,23 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Si existe el archivo de video indicado, reemplaza automáticamente el espacio reservado.
+    // Videos de YouTube (no listados): se incrustan con iframe y cargan recién cuando se acerca el scroll.
+    document.querySelectorAll('[data-youtube]').forEach(slot => {
+      const id = slot.dataset.youtube;
+      const iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?playsinline=1&rel=0&modestbranding=1';
+      iframe.title = 'Video ' + id;
+      iframe.loading = 'lazy';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      iframe.addEventListener('load', () => {
+        const placeholder = slot.querySelector('.media-placeholder');
+        if (placeholder) placeholder.remove();
+      });
+      slot.appendChild(iframe);
+    });
+
     document.querySelectorAll('[data-video]').forEach(slot => {
       const src = slot.dataset.video;
       const video = document.createElement('video');
