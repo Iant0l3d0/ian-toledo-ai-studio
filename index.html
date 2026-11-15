@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ian Toledo — Clones digitales y avatares virtuales para marcas personales y empresas.">
+  <meta name="theme-color" content="#080808">
+  <title>Ian Toledo — AI Content Creator</title>
+  <style>
+    :root {
+      --white: #FDFEFF;
+      --lime: #DDF344;
+      --black: #080808;
+      --muted: #a5a5a5;
+      --line: rgba(253,254,255,.16);
+      --panel: #111111;
+      --max: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--black); color: var(--white);
+      font-family: Inter, Arial, Helvetica, sans-serif; line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .wrap { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 14px; z-index: 20; margin: 14px auto 0;
+      width: min(var(--max), calc(100% - 32px)); min-height: 68px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 22px; border: 1px solid var(--line); border-radius: 18px;
+      background: rgba(8,8,8,.88); backdrop-filter: blur(16px);
+    }
+    .brand { font-size: 14px; font-weight: 900; letter-spacing: -.04em; }
+    .brand span { color: var(--lime); }
+    .navlinks { display: flex; gap: 27px; align-items: center; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+    .navlinks a { color: #c8c8c8; transition: color .2s; }
+    .navlinks a:hover { color: var(--lime); }
+    .nav-cta { padding: 10px 15px; border-radius: 8px; background: var(--lime); color: var(--black)!important; }
+    .menu { display: none; background: transparent; color: var(--white); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; }
+    .hero { min-height: 690px; display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: 55px; padding: 95px 0 85px; }
+    .eyebrow { color: var(--lime); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 20px 0 24px; font-size: clamp(58px, 8vw, 108px); line-height: .88; letter-spacing: -.085em; font-weight: 950; text-transform: uppercase; }
+    h1 .lime { color: var(--lime); }
+
+    .hero h1 .headline-line { white-space:nowrap; display:inline-block; letter-spacing:-.065em; }
+    @media (max-width:760px) {
+      .hero h1 .headline-line { font-size:.88em; letter-spacing:-.07em; }
+    }
+
+    .hero-copy { max-width: 520px; color: #b8b8b8; font-size: 16px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 19px; border-radius: 9px; font-size: 12px; font-weight: 850; border: 1px solid var(--line); transition: transform .2s, background .2s; }
+    .btn:hover { transform: translateY(-3px); }
+    .btn-primary { background: var(--lime); color: var(--black); border-color: var(--lime); }
+    .hero-art { position: relative; min-height: 520px; display: grid; grid-template-columns: .88fr 1fr; gap: 22px; align-items: center; padding: 28px; background: var(--white); color: var(--black); border-radius: 4px; }
+    .hero-main-media { position: relative; height: 420px; min-width: 0; overflow: hidden; background: #111; }
+    .hero-main-media video, .hero-small video { width:100%; height:100%; object-fit:cover; display:block; }
+    .hero-main-placeholder { height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; color:var(--white); background:radial-gradient(circle at 50% 35%,#30351b,#101010 65%); text-align:center; padding:20px; }
+    .hero-main-placeholder .play { width:58px; height:58px; display:grid; place-items:center; border:1px solid var(--lime); border-radius:50%; color:var(--lime); font-size:19px; }
+    .hero-main-placeholder strong { font-size:13px; letter-spacing:.12em; text-transform:uppercase; }
+    .hero-main-placeholder small { color:#aaa; font-size:11px; }
+    .hero-side-media { display:grid; gap:22px; min-width:0; }
+    .hero-small { position:relative; aspect-ratio:1.08/1; overflow:hidden; background:var(--lime); color:var(--black); }
+    .hero-small-placeholder { width:100%; height:100%; min-height:150px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px; padding:15px; text-align:center; }
+    .hero-small-placeholder b { font-size:clamp(19px,2.2vw,30px); letter-spacing:-.06em; text-transform:uppercase; }
+    .hero-small-placeholder span { font-size:10px; font-weight:800; letter-spacing:.12em; }
+    .hero-caption { position:absolute; left:12px; top:12px; padding:8px 10px; background:var(--black); color:var(--white); font-size:9px; font-weight:850; letter-spacing:.1em; text-transform:uppercase; z-index:2; }
+    .floating-tag { position:absolute; left:-16px; bottom:8px; background:var(--black); color:var(--lime); border:1px solid var(--lime); padding:13px 16px; font-size:10px; font-weight:900; letter-spacing:.08em; box-shadow:0 12px 35px #0005; }
+
+    .hero-portrait { background:#151515; }
+    .hero-portrait img { width:100%; height:100%; object-fit:cover; display:block; }
+    .hero-portrait .portrait-placeholder { display:none; }
+    .section-head p { max-width:430px; font-size:15px; line-height:1.55; text-wrap:pretty; }
+    .service h3 { max-width:100%; font-size:clamp(24px,2.7vw,34px); line-height:1.04; margin:28px 0 12px; text-wrap:balance; }
+    .service p { max-width:36ch; font-size:15px; line-height:1.6; text-wrap:pretty; }
+    .service-icon { width:42px; height:42px; display:grid; place-items:center; border:1px solid rgba(221,243,68,.55); border-radius:11px; color:var(--lime); margin-top:22px; }
+    .service-icon svg { width:21px; height:21px; }
+    .steps { gap:22px; }
+    .step { border-top:0; border-left:2px solid var(--lime); padding:4px 18px 0 20px; min-height:185px; }
+    .step-icon { width:44px; height:44px; display:grid; place-items:center; border:1px solid rgba(221,243,68,.5); border-radius:12px; color:var(--lime); margin-bottom:18px; }
+    .step-icon svg { width:22px; height:22px; }
+    .step h3 { text-wrap:balance; }
+    .step p { max-width:34ch; font-size:14px; line-height:1.55; text-wrap:pretty; }
+    .reel-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .reel-card { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+    .reel-card .media { aspect-ratio:9/16; max-height:480px; }
+    .carousel-shell { position:relative; overflow:hidden; padding:12px 0 24px; }
+    .focus-track { display:flex; align-items:center; justify-content:center; gap:14px; min-height:330px; touch-action:pan-y; user-select:none; }
+    .focus-slide { flex:0 0 min(32%,300px); aspect-ratio:1/1; overflow:hidden; border-radius:14px; border:1px solid var(--line); background:#151515; position:relative; transform:scale(.78); opacity:.36; filter:blur(2px) brightness(.55); transition:transform .42s ease,opacity .42s ease,filter .42s ease; }
+    .focus-slide.active { transform:scale(1); opacity:1; filter:none; border-color:rgba(221,243,68,.65); box-shadow:0 16px 45px #0008; }
+    .focus-slide img { width:100%; height:100%; object-fit:cover; display:block; }
+    .focus-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:9px; background:radial-gradient(circle at 50% 35%,#30351b,#101010 68%); color:var(--white); text-align:center; padding:14px; }
+    .focus-placeholder b { font-size:12px; letter-spacing:.1em; text-transform:uppercase; }
+    .focus-placeholder small { font-size:10px; color:#aaa; }
+    .carousel-controls { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:5px; }
+    .carousel-arrow { width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:#111; color:var(--lime); cursor:pointer; font-size:20px; }
+    .carousel-arrow:hover { background:var(--lime); color:var(--black); }
+    .carousel-count { color:#aaa; font-size:11px; letter-spacing:.12em; font-weight:800; min-width:48px; text-align:center; }
+    .carousel-title { display:flex; justify-content:space-between; align-items:end; gap:18px; margin:28px 0 8px; }
+    .carousel-title h3 { margin:0; font-size:clamp(22px,3vw,32px); letter-spacing:-.05em; text-transform:uppercase; }
+    .carousel-title span { color:var(--lime); font-size:10px; letter-spacing:.12em; font-weight:850; }
+    .contact p { max-width:370px; font-size:17px; line-height:1.55; }
+    .contact .btn { min-height:56px; padding:0 25px; font-size:15px; }
+    .contact .btn:hover { background:#202020; }
+    @media (max-width:760px) {
+      .reel-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+      .reel-card .media { max-height:none; }
+      .reel-card .project-info { padding:10px 8px; display:block; }
+      .reel-card .project-info h3 { font-size:11px; }
+      .reel-card .project-info p { font-size:10px; }
+      .focus-track { min-height:250px; gap:8px; }
+      .focus-slide { flex-basis:66%; transform:scale(.72); }
+      .focus-slide.active { transform:scale(1); }
+      .focus-slide.prev { margin-right:-22%; }
+      .focus-slide.next { margin-left:-22%; }
+      .carousel-title { align-items:start; flex-direction:column; gap:7px; }
+      .steps { gap:22px; }
+      .step { min-height:0; padding-bottom:5px; }
+      .contact p { font-size:16px; }
+      .contact .btn { min-height:54px; font-size:14px; }
+    }
+
+    section { padding: 92px 0; border-top: 1px solid rgba(253,254,255,.1); }
+
+    #servicios .section-head p,
+    #clones .section-head p {
+      width: 52%;
+      max-width: 560px;
+      flex: 0 1 560px;
+      font-size: 14px;
+      line-height: 1.5;
+      text-wrap: pretty;
+    }
+    @media (max-width:760px) {
+      #servicios .section-head p,
+      #clones .section-head p {
+        width: auto;
+        max-width: 100%;
+        flex: auto;
+      }
+    }
+
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:25px; margin-bottom:34px; }
+    .section-head h2 { margin:10px 0 0; font-size:clamp(36px,5vw,62px); line-height:.95; letter-spacing:-.065em; text-transform:uppercase; }
+    .section-head p { max-width:390px; color:var(--muted); font-size:14px; margin:0; }
+    .service-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .service { background:var(--panel); border:1px solid var(--line); border-radius:15px; padding:28px; min-height:250px; position:relative; overflow:hidden; }
+    .service .num { color:var(--lime); font-size:11px; font-weight:900; letter-spacing:.15em; }
+    .service h3 { font-size:clamp(25px,3vw,38px); letter-spacing:-.06em; text-transform:uppercase; margin:45px 0 10px; }
+    .service p { color:var(--muted); max-width:420px; margin:0; font-size:14px; }
+    .service:after { content:""; position:absolute; width:130px; height:130px; right:-40px; top:-40px; border:1px solid rgba(221,243,68,.35); border-radius:50%; box-shadow:0 0 0 18px rgba(221,243,68,.035),0 0 0 38px rgba(221,243,68,.025); }
+    .project-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; }
+    .project { background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+    .media { aspect-ratio: 9/16; max-height:520px; background: #151515; position:relative; display:flex; align-items:center; justify-content:center; color:#777; overflow:hidden; }
+    .media video { width:100%; height:100%; object-fit:cover; display:block; background:#111; }
+    .media-placeholder { width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:12px; padding:20px; text-align:center; background:radial-gradient(circle at 50% 35%,#282d15,#121212 62%); }
+    .play { width:52px; height:52px; display:grid; place-items:center; border:1px solid var(--lime); border-radius:50%; color:var(--lime); font-size:18px; }
+    .media-placeholder strong { color:var(--white); font-size:12px; text-transform:uppercase; letter-spacing:.12em; }
+    .media-placeholder small { color:#999; font-size:11px; }
+    .project-info { padding:18px; display:flex; justify-content:space-between; gap:15px; align-items:center; }
+    .project-info h3 { margin:0; font-size:15px; }
+    .project-info p { margin:4px 0 0; color:var(--muted); font-size:12px; }
+    .pill { color:var(--lime); font-size:10px; font-weight:850; text-transform:uppercase; letter-spacing:.1em; white-space:nowrap; }
+    .compare { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .compare-card { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--panel); }
+    .compare-label { padding:13px 16px; font-size:11px; text-transform:uppercase; font-weight:850; letter-spacing:.1em; display:flex; justify-content:space-between; }
+    .compare-label span:last-child { color:var(--lime); }
+    .compare .media { aspect-ratio:9/16; max-height:420px; }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .step { border-top:2px solid var(--lime); padding:18px 16px 0 0; }
+    .step b { color:var(--lime); font-size:11px; letter-spacing:.1em; }
+    .step h3 { margin:18px 0 8px; font-size:21px; letter-spacing:-.04em; }
+    .step p { color:var(--muted); font-size:13px; margin:0; }
+    .contact { background:var(--lime); color:var(--black); border-radius:18px; padding:clamp(28px,6vw,65px); display:flex; justify-content:space-between; align-items:end; gap:25px; }
+    .contact .eyebrow { color:#343b08; }
+    .contact h2 { font-size:clamp(42px,7vw,82px); line-height:.9; letter-spacing:-.08em; text-transform:uppercase; margin:14px 0 0; }
+    .contact p { max-width:330px; font-size:14px; }
+    .contact .btn { background:var(--black); color:var(--white); border-color:var(--black); }
+    .contact-alt { margin-top:18px; font-size:14px; line-height:1.5; }
+    .contact-alt a { color:var(--black); font-weight:800; text-decoration:underline; text-underline-offset:3px; }
+    footer { padding:28px 0 38px; display:flex; justify-content:space-between; color:#888; font-size:11px; }
+    .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    @media (max-width:760px) {
+      .wrap { width:calc(100% - 34px); }
+      .nav { width:calc(100% - 20px); padding:0 14px; min-height:60px; }
+      .menu { display:block; }
+      .navlinks { display:none; position:absolute; top:68px; left:0; right:0; padding:18px; border:1px solid var(--line); border-radius:12px; background:#101010; flex-direction:column; align-items:stretch; gap:18px; }
+      .navlinks.open { display:flex; }
+      .hero { grid-template-columns:1fr; gap:30px; padding:80px 0 65px; min-height:auto; }
+      .hero-art { width:100%; min-width:0; min-height:0; grid-template-columns:minmax(0,1fr); gap:12px; padding:12px; }
+      .hero-main-media { width:100%; height:auto; aspect-ratio:4/5; }
+      .hero-side-media { width:100%; min-width:0; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+      .hero-small { width:100%; min-width:0; aspect-ratio:1/1; }
+      .hero-small-placeholder { min-height:0; padding:8px; }
+      .hero-small-placeholder b { font-size:clamp(12px,4vw,18px); line-height:1.05; overflow-wrap:anywhere; }
+      .hero-small-placeholder span { font-size:9px; }
+      .floating-tag { left:8px; bottom:8px; font-size:8px; padding:9px 10px; max-width:calc(100% - 16px); }
+      .hero-frame { width:min(82%,360px); }
+      .floating-tag { left:0; bottom:22px; }
+      section { padding:68px 0; }
+      .section-head { display:block; }
+      .section-head p { margin-top:18px; }
+      .service-grid,.project-grid,.compare { grid-template-columns:1fr; }
+      .service { min-height:220px; }
+      .steps { grid-template-columns:1fr; gap:26px; }
+      .contact { display:block; }
+      .contact p { margin:22px 0; }
+      footer { gap:15px; flex-direction:column; }
+    }
+
+
+    /* AJUSTES FINALES: HERO MÓVIL, CARRUSELES Y PROCESO */
+    #servicios .carousel-shell,
+    #servicios .carousel-title { width:100%; }
+
+    .carousel-shell {
+      overflow:hidden;
+      padding:24px 0 30px;
+    }
+    .focus-track {
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:20px;
+      min-height:470px;
+      touch-action:pan-y;
+      user-select:none;
+      cursor:grab;
+    }
+    .focus-slide {
+      flex:0 0 min(39vw,410px);
+      width:min(39vw,410px);
+      aspect-ratio:1/1;
+      overflow:hidden;
+      border-radius:16px;
+      border:2px solid rgba(221,243,68,.34);
+      background:#151515;
+      position:relative;
+      transform:scale(.76);
+      opacity:.52;
+      filter:blur(2px) brightness(.68);
+      transition:transform .45s ease, opacity .45s ease, filter .45s ease, border-color .45s ease, box-shadow .45s ease;
+      flex-shrink:0;
+    }
+    .focus-slide.active {
+      transform:scale(1);
+      opacity:1;
+      filter:none;
+      border:4px solid var(--lime);
+      box-shadow:0 0 0 2px rgba(221,243,68,.18), 0 0 28px rgba(221,243,68,.22), 0 20px 55px rgba(0,0,0,.6);
+      z-index:2;
+    }
+    .focus-slide img { width:100%; height:100%; object-fit:cover; display:block; }
+    .focus-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:9px; background:radial-gradient(circle at 50% 35%,#30351b,#101010 68%); color:var(--white); text-align:center; padding:18px; }
+    .carousel-controls { display:flex; align-items:center; justify-content:center; gap:18px; margin-top:4px; }
+    .carousel-arrow { width:46px; height:46px; border-radius:50%; border:1px solid rgba(221,243,68,.55); background:#111; color:var(--lime); cursor:pointer; font-size:21px; transition:background .2s,color .2s,border-color .2s; }
+    .carousel-arrow:hover { background:var(--lime); color:var(--black); border-color:var(--lime); }
+
+    .hero-small video,
+    .media video {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:1;
+    }
+
+    /* Las tres etapas mantienen línea superior y contenido centrado dentro de cada tarjeta. */
+    .steps {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+    }
+    .step {
+      border:0 !important;
+      border-top:2px solid var(--lime) !important;
+      min-width:0;
+      min-height:250px;
+      padding:24px 22px 22px !important;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      text-align:center;
+    }
+    .step-icon {
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      margin:0 auto 18px !important;
+      border:1px solid rgba(221,243,68,.65);
+      border-radius:13px;
+      color:var(--lime);
+      background:rgba(221,243,68,.035);
+    }
+    .step-icon svg { width:23px; height:23px; }
+    .step b { display:block; color:var(--lime); font-size:11px; letter-spacing:.1em; text-align:center; }
+    .step h3 { width:100%; margin:17px 0 9px !important; font-size:21px; letter-spacing:-.04em; text-align:center; text-wrap:balance; }
+    .step p { width:100%; max-width:34ch; margin:0 auto !important; color:var(--muted); font-size:13px; line-height:1.55; text-align:center; text-wrap:pretty; }
+
+    /* Los textos descriptivos de las cabeceras usan el ancho necesario para dos líneas. */
+    #servicios .section-head p,
+    #clones .section-head p {
+      width:52%;
+      max-width:560px;
+      flex:0 1 560px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+      margin:0;
+    }
+
+    @media (max-width:760px) {
+      .wrap { width:calc(100% - 32px); }
+      .hero {
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        width:100%;
+        min-width:0;
+        min-height:auto;
+        gap:26px;
+        padding:60px 0 54px;
+      }
+      .hero > .reveal,
+      .hero-art { width:100%; min-width:0; max-width:100%; }
+      .hero h1 {
+        max-width:100%;
+        font-size:clamp(42px,11vw,60px);
+        line-height:.9;
+        overflow-wrap:normal;
+      }
+      .hero h1 .headline-line {
+        display:inline-block;
+        max-width:100%;
+        white-space:nowrap;
+        font-size:.78em;
+        letter-spacing:-.075em;
+      }
+      .hero-copy { max-width:100%; font-size:15px; }
+      .actions { gap:9px; }
+      .actions .btn { font-size:11px; padding:0 13px; }
+      .hero-art {
+        display:grid;
+        grid-template-columns:minmax(0,1fr);
+        grid-template-rows:auto auto auto;
+        align-items:stretch;
+        gap:12px;
+        min-height:0;
+        height:auto;
+        padding:12px;
+        background:var(--white);
+      }
+      .hero-main-media {
+        width:100%;
+        min-width:0;
+        height:auto;
+        aspect-ratio:4/5;
+      }
+      .hero-main-media img { width:100%; height:100%; object-fit:cover; }
+      .hero-side-media {
+        display:grid;
+        width:100%;
+        min-width:0;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+      }
+      .hero-small {
+        width:100%;
+        min-width:0;
+        height:auto;
+        aspect-ratio:1/1;
+      }
+      .hero-small-placeholder { min-height:0; height:100%; padding:9px 7px; gap:6px; }
+      .hero-small-placeholder b {
+        max-width:100%;
+        font-size:clamp(11px,3.8vw,16px);
+        line-height:1.08;
+        letter-spacing:-.045em;
+        overflow-wrap:normal;
+        word-break:normal;
+      }
+      .hero-small-placeholder span { font-size:9px; }
+      .hero-caption { left:9px; top:9px; max-width:calc(100% - 18px); font-size:8px; }
+      .floating-tag {
+        position:static;
+        inset:auto;
+        width:100%;
+        max-width:100%;
+        margin:0;
+        padding:11px 12px;
+        text-align:center;
+        font-size:9px;
+        line-height:1.3;
+      }
+      .carousel-shell { padding:14px 0 22px; }
+      .focus-track { min-height:min(88vw,360px); gap:0; }
+      .focus-slide {
+        flex-basis:min(72vw,350px);
+        width:min(72vw,350px);
+        transform:scale(.72);
+        border-width:2px;
+      }
+      .focus-slide.active { transform:scale(1); border-width:4px; }
+      .focus-slide.prev { margin-right:-20vw; }
+      .focus-slide.next { margin-left:-20vw; }
+      .carousel-controls { margin-top:2px; }
+      .steps { grid-template-columns:1fr; gap:18px; }
+      .step { min-height:0; padding:22px 16px 24px !important; }
+      .step h3 { margin-top:14px !important; }
+      #servicios .section-head p,
+      #clones .section-head p { width:100%; max-width:100%; flex:auto; margin-top:18px; }
+    }
+
+    @media (max-width:390px) {
+      .hero h1 { font-size:clamp(39px,10.5vw,44px); }
+      .hero h1 .headline-line { font-size:.76em; }
+      .hero-art { padding:9px; gap:9px; }
+      .hero-small-placeholder b { font-size:11px; }
+    }
+
+
+    .hero { grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); }
+    .hero > .reveal { min-width:0; }
+    .hero h1 .headline-line { font-size:.70em; letter-spacing:-.075em; }
+    #servicios .section-head p,
+    #clones .section-head p,
+    #avatares .section-head p {
+      width:52%; max-width:560px; flex:0 1 560px;
+    }
+    @media (max-width:760px) {
+      .hero { grid-template-columns:1fr; }
+      .hero h1 .headline-line { font-size:.78em; letter-spacing:-.075em; }
+      #servicios .section-head p,
+      #clones .section-head p,
+      #avatares .section-head p { width:100%; max-width:100%; flex:auto; }
+    }
+
+  
+
+    /* HERO V11: un solo video horizontal con borde Solar Lime */
+    .hero { grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr); }
+    .hero > .reveal, .hero-art { min-width:0; }
+    .hero-art {
+      position:relative;
+      display:block;
+      width:100%;
+      min-height:0;
+      height:auto;
+      padding:0;
+      background:transparent;
+      color:var(--white);
+    }
+    .hero-video-frame {
+      position:relative;
+      width:100%;
+      min-width:0;
+      aspect-ratio:16/9;
+      overflow:hidden;
+      background:#101010;
+      border:3px solid var(--lime);
+      border-radius:15px;
+      box-shadow:0 0 0 1px rgba(221,243,68,.16), 0 18px 48px rgba(0,0,0,.42);
+    }
+    .hero-video-frame video {
+      position:absolute;
+      inset:0;
+      z-index:1;
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      background:#101010;
+    }
+    .hero-video-placeholder {
+      position:absolute;
+      inset:0;
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:13px;
+      padding:22px;
+      color:var(--white);
+      text-align:center;
+      background:radial-gradient(ellipse at center,rgba(221,243,68,.13),transparent 58%),#101010;
+    }
+    .video-kicker {
+      color:var(--lime);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.16em;
+    }
+    .video-play {
+      width:56px;
+      height:56px;
+      display:grid;
+      place-items:center;
+      padding-left:3px;
+      border:1px solid var(--lime);
+      border-radius:50%;
+      color:var(--lime);
+      font-size:19px;
+    }
+    .hero-video-placeholder strong {
+      font-size:clamp(13px,1.5vw,17px);
+      font-weight:850;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+    }
+    .hero-video-placeholder small {
+      max-width:34ch;
+      color:#aaa;
+      font-size:11px;
+      line-height:1.45;
+    }
+    .hero-art .floating-tag {
+      position:static;
+      display:inline-flex;
+      align-items:center;
+      width:auto;
+      max-width:100%;
+      margin-top:15px;
+      padding:11px 15px;
+      border:1px solid var(--lime);
+      border-radius:7px;
+      background:var(--black);
+      color:var(--lime);
+      font-size:10px;
+      font-weight:900;
+      letter-spacing:.09em;
+      line-height:1.35;
+      box-shadow:0 10px 28px rgba(0,0,0,.3);
+    }
+    @media (max-width:760px) {
+      .hero { grid-template-columns:minmax(0,1fr); }
+      .hero-art { width:100%; max-width:100%; padding:0; }
+      .hero-video-frame { width:100%; aspect-ratio:16/9; border-width:3px; border-radius:12px; }
+      .hero-video-frame video { object-fit:contain; }
+      .hero-video-placeholder { gap:9px; padding:12px; }
+      .video-play { width:44px; height:44px; font-size:16px; }
+      .hero-video-placeholder strong { font-size:11px; }
+      .hero-video-placeholder small { font-size:9px; }
+      .hero-art .floating-tag { display:inline-flex; width:auto; max-width:100%; margin-top:10px; padding:9px 11px; font-size:8px; }
+    }
+
+  
+    /* V12: carruseles sin flechas, con navegación por las tarjetas laterales. */
+    .carousel-shell {
+      width:100%;
+      max-width:1100px;
+      margin-inline:auto;
+      overflow:hidden;
+      padding:24px 0 14px;
+    }
+    .focus-track {
+      position:relative;
+      left:50%;
+      display:flex;
+      justify-content:flex-start;
+      align-items:center;
+      width:max-content;
+      min-height:500px;
+      gap:20px;
+      transform:translateX(-220px);
+      transition:transform .68s cubic-bezier(.22,.61,.36,1);
+      will-change:transform;
+      touch-action:pan-y;
+      user-select:none;
+      cursor:grab;
+    }
+    .focus-track.is-dragging { cursor:grabbing; }
+    .focus-slide {
+      position:relative;
+      flex:0 0 min(42vw,440px);
+      width:min(42vw,440px);
+      aspect-ratio:1 / 1;
+      overflow:hidden;
+      border-radius:17px;
+      border:2px solid rgba(221,243,68,.34);
+      background:#151515;
+      transform:scale(.76);
+      opacity:.38;
+      filter:blur(2.5px) brightness(.62);
+      cursor:pointer;
+      pointer-events:auto;
+      transition:transform .58s ease, opacity .58s ease, filter .58s ease, border-color .58s ease, box-shadow .58s ease;
+      flex-shrink:0;
+      outline:none;
+    }
+    .focus-slide.active {
+      transform:scale(1);
+      opacity:1;
+      filter:none;
+      border:4px solid var(--lime);
+      box-shadow:0 0 0 2px rgba(221,243,68,.2), 0 0 32px rgba(221,243,68,.25), 0 20px 55px rgba(0,0,0,.6);
+      cursor:default;
+      z-index:2;
+    }
+    .focus-slide.prev,
+    .focus-slide.next {
+      z-index:1;
+      margin:0 !important;
+    }
+    .focus-slide.prev:hover,
+    .focus-slide.next:hover,
+    .focus-slide.prev:focus-visible,
+    .focus-slide.next:focus-visible {
+      transform:scale(.84);
+      opacity:.82;
+      filter:blur(.4px) brightness(.88);
+      border-color:var(--lime);
+    }
+    .focus-slide.far {
+      opacity:0;
+      filter:blur(4px);
+      pointer-events:none;
+    }
+    .focus-slide img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
+    .carousel-controls {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:24px;
+      margin-top:8px;
+      pointer-events:none;
+    }
+    .carousel-count {
+      color:#c9c9c9;
+      font-size:11px;
+      letter-spacing:.14em;
+      font-weight:850;
+    }
+    .carousel-arrow { display:none !important; }
+
+    @media (max-width:760px) {
+      .carousel-shell { width:100%; padding:12px 0 10px; }
+      .focus-track {
+        min-height:min(82vw,390px);
+        gap:10px;
+      }
+      .focus-slide {
+        flex-basis:min(72vw,350px);
+        width:min(72vw,350px);
+        border-radius:14px;
+        transform:scale(.74);
+      }
+      .focus-slide.active { transform:scale(1); border-width:4px; }
+      .focus-slide.prev:hover,
+      .focus-slide.next:hover,
+      .focus-slide.prev:focus-visible,
+      .focus-slide.next:focus-visible { transform:scale(.82); }
+      .carousel-controls { margin-top:5px; }
+    }
+    @media (max-width:390px) {
+      .focus-track { min-height:82vw; gap:8px; }
+      .focus-slide { flex-basis:72vw; width:72vw; }
+    }
+
+  
+    /* V13: posicionamiento estable del carrusel. Cada tarjeta se centra por separado. */
+    .carousel-shell {
+      position:relative !important;
+      width:100% !important;
+      max-width:1100px !important;
+      margin-inline:auto !important;
+      padding:24px 0 14px !important;
+      overflow:hidden !important;
+    }
+    .focus-track {
+      position:relative !important;
+      left:auto !important;
+      width:100% !important;
+      min-height:500px !important;
+      display:block !important;
+      gap:0 !important;
+      transform:none !important;
+      transition:none !important;
+      overflow:visible !important;
+      touch-action:pan-y !important;
+      user-select:none !important;
+      cursor:grab !important;
+    }
+    .focus-track.is-dragging { cursor:grabbing !important; }
+    .focus-slide {
+      position:absolute !important;
+      left:50% !important;
+      top:50% !important;
+      width:min(42vw,460px) !important;
+      height:auto !important;
+      aspect-ratio:1 / 1 !important;
+      margin:0 !important;
+      flex:none !important;
+      transform:translate(calc(-50% + var(--slide-x, 0px)), -50%) scale(var(--slide-scale, .76)) !important;
+      transform-origin:center center !important;
+      opacity:var(--slide-opacity, 0) !important;
+      filter:var(--slide-filter, blur(4px) brightness(.55)) !important;
+      border:2px solid rgba(221,243,68,.3) !important;
+      border-radius:17px !important;
+      overflow:hidden !important;
+      background:#151515 !important;
+      box-shadow:none !important;
+      z-index:var(--slide-z, 0) !important;
+      cursor:pointer !important;
+      pointer-events:var(--slide-pointer, none) !important;
+      transition:
+        transform .62s cubic-bezier(.22,.61,.36,1),
+        opacity .62s ease,
+        filter .62s ease,
+        border-color .62s ease,
+        box-shadow .62s ease !important;
+      outline:none !important;
+    }
+    .focus-slide.active {
+      --slide-x:0px;
+      --slide-scale:1;
+      --slide-opacity:1;
+      --slide-filter:none;
+      --slide-z:5;
+      --slide-pointer:none;
+      border:4px solid var(--lime) !important;
+      box-shadow:
+        0 0 0 2px rgba(221,243,68,.2),
+        0 0 34px rgba(221,243,68,.28),
+        0 20px 55px rgba(0,0,0,.58) !important;
+      cursor:default !important;
+    }
+    .focus-slide.prev,
+    .focus-slide.next {
+      --slide-scale:.76;
+      --slide-opacity:.46;
+      --slide-filter:blur(2px) brightness(.62);
+      --slide-z:3;
+      --slide-pointer:auto;
+      border-color:rgba(221,243,68,.36) !important;
+    }
+    .focus-slide.prev:hover,
+    .focus-slide.next:hover,
+    .focus-slide.prev:focus-visible,
+    .focus-slide.next:focus-visible {
+      --slide-scale:.82;
+      --slide-opacity:.82;
+      --slide-filter:blur(.5px) brightness(.88);
+      border-color:var(--lime) !important;
+      box-shadow:0 0 18px rgba(221,243,68,.18) !important;
+    }
+    .focus-slide.far {
+      --slide-scale:.7;
+      --slide-opacity:0;
+      --slide-filter:blur(4px);
+      --slide-z:0;
+      --slide-pointer:none;
+    }
+    .focus-slide img,
+    .focus-placeholder {
+      width:100% !important;
+      height:100% !important;
+      display:block;
+      object-fit:cover !important;
+    }
+    .carousel-controls {
+      display:flex !important;
+      justify-content:center !important;
+      align-items:center !important;
+      min-height:22px !important;
+      margin-top:5px !important;
+      pointer-events:none !important;
+    }
+    .carousel-arrow { display:none !important; }
+    .carousel-count {
+      color:#c9c9c9 !important;
+      font-size:11px !important;
+      letter-spacing:.14em !important;
+      font-weight:850 !important;
+    }
+    @media (max-width:760px) {
+      .carousel-shell { width:100% !important; padding:14px 0 10px !important; }
+      .focus-track { min-height:min(82vw,370px) !important; }
+      .focus-slide {
+        width:min(72vw,350px) !important;
+        border-radius:14px !important;
+      }
+      .focus-slide.active { border-width:4px !important; }
+    }
+    @media (max-width:390px) {
+      .focus-track { min-height:82vw !important; }
+      .focus-slide { width:72vw !important; }
+    }
+
+  
+    /* FIX: los videos verticales (9:16) quedaban angostos y pegados a la izquierda de la tarjeta.
+       Pasa porque aspect-ratio + max-height achican el ancho en vez de ocupar toda la tarjeta.
+       Ahora la caja tiene alto fijo, ancho calculado por el 9:16, y va centrada. */
+    .project .media { width:auto; height:520px; max-height:none; margin-inline:auto; }
+    @media (min-width:761px) {
+      .reel-card .media { width:auto; height:480px; max-height:none; margin-inline:auto; }
+    }
+    /* FIX: el texto del placeholder del carrusel perdía el flex (display:block pisaba al flex) y quedaba pegado arriba */
+    .focus-placeholder { display:flex !important; flex-direction:column; align-items:center; justify-content:center; }
+  
+    /* FIX: las tarjetas laterales del carrusel se cortaban en seco contra el borde del contenedor
+       (el shell tenía overflow:hidden y las laterales se salen de su ancho). Ahora el shell no recorta
+       y el recorte lo hace el borde de la pantalla, que es lo natural en un carrusel. */
+    .carousel-shell { overflow: visible !important; }
+    html, body { overflow-x: clip; }
+  
+    /* FIX: en pantalla completa el video vertical se estiraba (object-fit:cover) y se cortaba arriba y abajo.
+       Ahora se ve entero, con barras negras a los costados. Dentro de la tarjeta no cambia nada. */
+    video:fullscreen { object-fit: contain !important; background: #000 !important; }
+    video:-webkit-full-screen { object-fit: contain !important; background: #000 !important; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#inicio">IAN <span>TOLEDO</span></a>
+    <button class="menu" id="menuBtn" aria-label="Abrir menú">MENÚ</button>
+    <nav class="navlinks" id="navlinks">
+      <a href="#servicios">Servicios</a>
+      <a href="#clones">Clones</a>
+      <a href="#avatares">Avatares</a>
+      <a href="#proceso">Proceso</a>
+      <a class="nav-cta" href="#contacto">Hablemos</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero" id="inicio" style="border:0">
+        <div class="reveal">
+          <div class="eyebrow">AI CONTENT CREATOR · PRODUCCIÓN AUDIOVISUAL</div>
+          <h1>Tu imagen.<br><span class="headline-line">Tu contenido.</span><br><span class="lime">Sin límites.</span></h1>
+          <p class="hero-copy">Creo clones digitales y avatares con inteligencia artificial para marcas personales y empresas que quieren producir contenido de forma constante.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#clones">Ver proyectos ↓</a>
+            <a class="btn" href="#contacto">Hablemos de tu proyecto</a>
+          </div>
+        </div>
+        <div class="hero-art reveal">
+          <div class="hero-video-frame" data-video="videos/hero-showcase.mp4">
+            <div class="hero-video-placeholder">
+              <span class="video-kicker">VIDEO DESTACADO</span>
+              <span class="video-play" aria-hidden="true">▶</span>
+              <strong>Personas reales + avatares IA</strong>
+              <small>Agregá tu video horizontal como videos/hero-showcase.mp4</small>
+            </div>
+          </div>
+          <div class="floating-tag">UNA IMAGEN, CONTENIDO SIN LÍMITE</div>
+        </div>
+      </section>
+
+      <section id="servicios">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">¿QUÉ HAGO?</div><h2>Contenido creado<br>con inteligencia.</h2></div>
+          <p>Desarrollo soluciones audiovisuales con IA para que personas y marcas puedan comunicar más, con una producción flexible y consistente.</p>
+        </div>
+        <div class="service-grid">
+          <article class="service reveal"><div class="num">01 / CLONES DIGITALES</div><div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.2-6 7.5-6s6.8 2 7.5 6"/></svg></div><h3>Tu versión digital.</h3><p>Creo una réplica digital de una persona para generar videos con su imagen y voz, manteniendo una presencia reconocible en distintos contenidos.</p></article>
+          <article class="service reveal"><div class="num">02 / AVATARES VIRTUALES</div><div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M9 10l2.2 2L9 14m4.5 0H17"/></svg></div><h3>Un creador para tu marca.</h3><p>Diseño avatares virtuales que presentan productos, explican servicios y generan contenido para empresas que no cuentan con un creador propio.</p></article>
+        </div>
+        <div class="carousel-title reveal"><h3>Personas reales</h3><span>01 / 05 · REFERENCIAS ORIGINALES</span></div>
+        <div class="carousel-shell reveal" data-carousel="personas">
+          <div class="focus-track" aria-label="Carrusel de personas reales"></div>
+        </div>
+        <div class="carousel-title reveal"><h3>Avatares IA</h3><span>02 / 05 · VERSIONES DIGITALES</span></div>
+        <div class="carousel-shell reveal" data-carousel="avatares">
+          <div class="focus-track" aria-label="Carrusel de avatares IA"></div>
+        </div>
+      </section>
+
+      <section id="clones">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">PROYECTOS DESTACADOS / 01</div><h2>Clones<br>digitales.</h2></div>
+          <p>Del material original a una versión digital capaz de protagonizar nuevos videos. Acá vamos a mostrar el antes y el resultado.</p>
+        </div>
+        <div class="reel-grid">
+          <article class="reel-card reveal"><div class="media" data-video="videos/reel-01.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 01</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Clon digital</h3><p>Presentación a cámara</p></div><span class="pill">01</span></div></article>
+          <article class="reel-card reveal"><div class="media" data-video="videos/reel-02.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 02</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Contenido de valor</h3><p>Edición dinámica</p></div><span class="pill">02</span></div></article>
+          <article class="reel-card reveal"><div class="media" data-video="videos/reel-03.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 03</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Adaptación de contenido</h3><p>Formato para redes</p></div><span class="pill">03</span></div></article>
+        </div>
+      </section>
+
+      <section id="avatares">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">PROYECTOS DESTACADOS / 02</div><h2>Avatares<br>para marcas.</h2></div>
+          <p>Personajes virtuales pensados para comunicar, mostrar productos y crear piezas de contenido adaptadas a cada marca.</p>
+        </div>
+        <div class="project-grid">
+          <article class="project reveal">
+            <div class="media" data-video="videos/avatar-01.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 01</strong><small>Agregar video vertical</small></div></div>
+            <div class="project-info"><div><h3>Presentación de producto</h3><p>Avatar virtual · Video UGC</p></div><span class="pill">AVATAR IA</span></div>
+          </article>
+          <article class="project reveal">
+            <div class="media" data-video="videos/avatar-02.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 02</strong><small>Agregar video vertical</small></div></div>
+            <div class="project-info"><div><h3>Contenido para marca</h3><p>Avatar virtual · Video social</p></div><span class="pill">AVATAR IA</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="proceso">
+        <div class="section-head reveal">
+          <div><div class="eyebrow">CÓMO TRABAJO</div><h2>De la idea<br>al video.</h2></div>
+          <p>Un proceso claro para llevar una necesidad de comunicación a una pieza lista para publicar.</p>
+        </div>
+        <div class="steps">
+          <article class="step reveal"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 5.5h16v11H9l-5 3z"/><path d="M8 9h8M8 12.5h5"/></svg></div><b>01 / BRIEF</b><h3>Entendemos el objetivo</h3><p>Definimos audiencia, estilo, mensaje y tipo de contenido que necesita la marca.</p></article>
+          <article class="step reveal"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><path d="M19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7z"/></svg></div><b>02 / DESARROLLO</b><h3>Creo el recurso con IA</h3><p>Preparo el clon o avatar, genero las escenas y ajusto voz y presentación.</p></article>
+          <article class="step reveal"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="5" width="17" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></div><b>03 / ENTREGA</b><h3>Video listo para usar</h3><p>Edición, subtítulos y formato final para redes o los canales que necesite el proyecto.</p></article>
+        </div>
+      </section>
+
+      <section id="contacto">
+        <div class="contact reveal">
+          <div><div class="eyebrow">¿TENÉS UN PROYECTO EN MENTE?</div><h2>Hagamos<br>que suceda.</h2></div>
+          <div><p>Hablame para analizar tu caso y ver exactamente dónde te puedo ayudar.</p><a class="btn" href="https://www.instagram.com/ian.toledo_/" target="_blank" rel="noopener noreferrer">Contactarme ↗</a><div class="contact-alt">¿Preferís por mail?<br><a href="mailto:ian.toledo.3366@gmail.com">ian.toledo.3366@gmail.com</a></div></div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="wrap"><span>© <span id="year"></span> IAN TOLEDO</span><span>CLONES DIGITALES · AVATARES IA · CONTENIDO</span></footer>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const navlinks = document.getElementById('navlinks');
+    menuBtn.addEventListener('click', () => navlinks.classList.toggle('open'));
+    navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Si existe el archivo de video indicado, reemplaza automáticamente el espacio reservado.
+    document.querySelectorAll('[data-video]').forEach(slot => {
+      const src = slot.dataset.video;
+      const video = document.createElement('video');
+      video.src = src;
+      video.controls = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.addEventListener('error', () => {
+        // Aviso en la consola (F12) para saber por qué no cargó. No cambia nada visible en la página.
+        const motivos = { 1:'carga cancelada', 2:'error de red', 3:'el navegador no pudo decodificar el video (formato/códec)', 4:'no se encuentra el archivo o el formato no es compatible' };
+        console.warn('[videos] No cargó ' + src + ' → ' + (motivos[video.error && video.error.code] || 'error desconocido'));
+        video.remove();
+      });
+      slot.appendChild(video);
+      video.addEventListener('loadedmetadata', () => {
+        const placeholder = slot.querySelector('.media-placeholder, .hero-small-placeholder, .hero-video-placeholder');
+        if (placeholder) placeholder.remove();
+      });
+    });
+
+
+    // Carruseles full-focus centrados: clic en laterales, swipe y autoplay.
+    document.querySelectorAll('[data-carousel]').forEach(shell => {
+      const kind = shell.dataset.carousel;
+      const track = shell.querySelector('.focus-track');
+      const label = kind === 'personas' ? 'Persona real' : 'Avatar IA';
+      const prefix = kind === 'personas' ? 'persona' : 'avatar';
+      const total = 5;
+      let active = 0;
+      let pointerStart = null;
+      let dragged = false;
+      let suppressClick = false;
+      let timer = null;
+      let paused = false;
+
+      function makeSlide(index) {
+        const slide = document.createElement('div');
+        slide.className = 'focus-slide far';
+        slide.dataset.index = String(index);
+        slide.tabIndex = 0;
+        slide.setAttribute('role', 'button');
+        slide.setAttribute('aria-label', `${label} ${index + 1} de ${total}. Seleccionar imagen`);
+        const img = document.createElement('img');
+        img.src = `images/${prefix}-${String(index + 1).padStart(2, '0')}.jpg`;
+        img.alt = `${label} ${index + 1}`;
+        img.loading = index < 2 ? 'eager' : 'lazy';
+        img.onerror = () => {
+          img.remove();
+          const placeholder = document.createElement('div');
+          placeholder.className = 'focus-placeholder';
+          const title = document.createElement('b');
+          title.textContent = `${label} ${String(index + 1).padStart(2, '0')}`;
+          const note = document.createElement('small');
+          note.textContent = 'Reemplazar por imagen cuadrada';
+          placeholder.append(title, note);
+          slide.appendChild(placeholder);
+        };
+        slide.appendChild(img);
+        return slide;
+      }
+
+      const slides = Array.from({length: total}, (_, index) => makeSlide(index));
+      track.replaceChildren(...slides);
+
+      function render() {
+        const first = slides[0];
+        const cardWidth = parseFloat(getComputedStyle(first).width) ||
+          Math.min(shell.clientWidth * (window.matchMedia('(max-width:760px)').matches ? .72 : .42),
+                   window.matchMedia('(max-width:760px)').matches ? 350 : 460);
+        const isMobile = window.matchMedia('(max-width:760px)').matches;
+        const offset = cardWidth * (isMobile ? .88 : .92);
+
+        slides.forEach((slide, index) => {
+          let delta = index - active;
+          if (delta > total / 2) delta -= total;
+          if (delta < -total / 2) delta += total;
+
+          slide.classList.remove('active', 'prev', 'next', 'far');
+          slide.style.setProperty('--slide-x', `${delta * offset}px`);
+
+          if (delta === 0) {
+            slide.classList.add('active');
+          } else if (delta === -1 || delta === 1) {
+            slide.classList.add(delta < 0 ? 'prev' : 'next');
+          } else {
+            slide.classList.add('far');
+          }
+        });
+
+      }
+
+      function stopAutoplay() {
+        if (timer !== null) window.clearInterval(timer);
+        timer = null;
+      }
+
+      function startAutoplay() {
+        stopAutoplay();
+        if (paused || document.hidden) return;
+        timer = window.setInterval(() => move(1, false), 5000);
+      }
+
+      function move(direction, resetTimer = true) {
+        active = (active + direction + total) % total;
+        render();
+        if (resetTimer) startAutoplay();
+      }
+
+      track.addEventListener('click', event => {
+        if (suppressClick) return;
+        const slide = event.target.closest('.focus-slide');
+        if (!slide) return;
+        if (slide.classList.contains('prev')) move(-1, true);
+        else if (slide.classList.contains('next')) move(1, true);
+      });
+
+      track.addEventListener('keydown', event => {
+        const slide = event.target.closest('.focus-slide');
+        if (!slide) return;
+        if ((event.key === 'Enter' || event.key === ' ') && slide.classList.contains('prev')) {
+          event.preventDefault();
+          move(-1, true);
+        } else if ((event.key === 'Enter' || event.key === ' ') && slide.classList.contains('next')) {
+          event.preventDefault();
+          move(1, true);
+        }
+      });
+
+      // FIX: antes se capturaba el puntero apenas se apretaba, y eso hacía que el click
+      // llegara al carrusel y no a la tarjeta. Ahora solo se captura si realmente hay arrastre.
+      track.addEventListener('pointerdown', event => {
+        pointerStart = event.clientX;
+        dragged = false;
+      });
+
+      track.addEventListener('pointermove', event => {
+        if (pointerStart === null || dragged) return;
+        if (Math.abs(event.clientX - pointerStart) > 10) {
+          dragged = true;
+          track.classList.add('is-dragging');
+          if (track.setPointerCapture) track.setPointerCapture(event.pointerId);
+        }
+      });
+
+      track.addEventListener('pointerup', event => {
+        if (pointerStart === null) return;
+        const distance = event.clientX - pointerStart;
+        const wasDragged = dragged;
+        pointerStart = null;
+        dragged = false;
+        track.classList.remove('is-dragging');
+        if (wasDragged) {
+          suppressClick = true;
+          if (Math.abs(distance) > 40) move(distance < 0 ? 1 : -1, true);
+          window.setTimeout(() => { suppressClick = false; }, 180);
+        }
+      });
+
+      track.addEventListener('pointercancel', () => {
+        pointerStart = null;
+        dragged = false;
+        track.classList.remove('is-dragging');
+      });
+
+      shell.addEventListener('mouseenter', () => {
+        paused = true;
+        stopAutoplay();
+      });
+      shell.addEventListener('mouseleave', () => {
+        paused = false;
+        startAutoplay();
+      });
+      shell.addEventListener('focusin', () => {
+        paused = true;
+        stopAutoplay();
+      });
+      shell.addEventListener('focusout', event => {
+        if (!shell.contains(event.relatedTarget)) {
+          paused = false;
+          startAutoplay();
+        }
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) stopAutoplay();
+        else startAutoplay();
+      });
+      window.addEventListener('resize', render);
+
+      render();
+      startAutoplay();
+    });
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
