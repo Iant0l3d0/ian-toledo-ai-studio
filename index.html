@@ -180,7 +180,14 @@
     .contact .btn { background:var(--black); color:var(--white); border-color:var(--black); }
     .contact-alt { margin-top:18px; font-size:14px; line-height:1.5; }
     .contact-alt a { color:var(--black); font-weight:800; text-decoration:underline; text-underline-offset:3px; }
-    footer { padding:28px 0 38px; display:flex; justify-content:space-between; color:#888; font-size:11px; }
+    footer { padding:28px 0 38px; display:flex; justify-content:space-between; align-items:center; color:#888; font-size:11px; gap:18px; }
+    .footer-top-link {
+      width:44px; height:44px; flex:0 0 44px; display:grid; place-items:center;
+      border:1px solid var(--lime); border-radius:50%; color:var(--lime);
+      font-size:23px; line-height:1; transition:background .2s,color .2s,transform .2s;
+    }
+    .footer-top-link:hover { background:var(--lime); color:var(--black); transform:translateY(-3px); }
+    @media (max-width:760px) { .footer-top-link { display:none; } }
     .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease,transform .7s ease; }
     .reveal.visible { opacity:1; transform:translateY(0); }
     @media (max-width:760px) {
@@ -864,8 +871,8 @@
 
       <section id="servicios">
         <div class="section-head reveal">
-          <div><div class="eyebrow">¿QUÉ HAGO?</div><h2>Contenido creado<br>con inteligencia.</h2></div>
-          <p>Desarrollo soluciones audiovisuales con IA para que personas y marcas puedan comunicar más, con una producción flexible y consistente.</p>
+          <div><div class="eyebrow">¿QUÉ SERVICIO OFREZCO?</div><h2>Contenido<br>sin límites.</h2></div>
+          <p>Desarrollo clones y avatares realistas para llevar la comunicación de personas y marcas a otro nivel sin depender de grabaciones constantes.</p>
         </div>
         <div class="service-grid">
           <article class="service reveal"><div class="num">01 / CLONES DIGITALES</div><div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c.7-4 3.2-6 7.5-6s6.8 2 7.5 6"/></svg></div><h3>Tu versión digital.</h3><p>Creo una réplica digital de una persona para generar videos con su imagen y voz, manteniendo una presencia reconocible en distintos contenidos.</p></article>
@@ -938,7 +945,7 @@
       </section>
     </div>
   </main>
-  <footer class="wrap"><span>© <span id="year"></span> IAN TOLEDO</span><span>CLONES DIGITALES · AVATARES IA · CONTENIDO</span></footer>
+  <footer class="wrap"><span>© <span id="year"></span> IAN TOLEDO</span><span>CLONES DIGITALES · AVATARES IA · CONTENIDO</span><a class="footer-top-link" href="#inicio" aria-label="Volver al inicio" title="Volver al inicio">↑</a></footer>
 
   <script>
     const menuBtn = document.getElementById('menuBtn');
