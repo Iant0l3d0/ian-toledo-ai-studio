@@ -818,6 +818,10 @@
   
     /* Videos de YouTube dentro de las tarjetas */
     .media iframe { width:100%; height:100%; border:0; display:block; background:#000; }
+  
+    /* Menú superior: se oculta al bajar y vuelve al subir (o al estar arriba de todo) */
+    .nav { transition: transform .3s ease, opacity .3s ease; }
+    .nav.nav-hidden { transform: translateY(calc(-100% - 40px)); opacity: 0; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -879,8 +883,8 @@
 
       <section id="clones">
         <div class="section-head reveal">
-          <div><div class="eyebrow">PROYECTOS DESTACADOS / 01</div><h2>Clones<br>digitales.</h2></div>
-          <p>Del material original a una versión digital capaz de protagonizar nuevos videos. Acá vamos a mostrar el antes y el resultado.</p>
+          <div><div class="eyebrow">PROYECTOS DESTACADOS / 01</div><h2>Clones<br>realistas.</h2></div>
+          <p>Del material original a una versión digital capaz de protagonizar nuevos videos.</p>
         </div>
         <div class="reel-grid">
           <article class="reel-card reveal"><div class="media" data-video="videos/reel-01.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Reel de referencia 01</strong><small>Agregar video vertical</small></div></div><div class="project-info"><div><h3>Clon digital</h3><p>Presentación a cámara</p></div><span class="pill">01</span></div></article>
@@ -891,17 +895,25 @@
 
       <section id="avatares">
         <div class="section-head reveal">
-          <div><div class="eyebrow">PROYECTOS DESTACADOS / 02</div><h2>Avatares<br>para marcas.</h2></div>
+          <div><div class="eyebrow">PROYECTOS DESTACADOS / 02</div><h2>Avatares<br>realistas.</h2></div>
           <p>Personajes virtuales pensados para comunicar, mostrar productos y crear piezas de contenido adaptadas a cada marca.</p>
         </div>
         <div class="project-grid">
           <article class="project reveal">
             <div class="media" data-video="videos/avatar-01.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 01</strong><small>Agregar video vertical</small></div></div>
-            <div class="project-info"><div><h3>Presentación de producto</h3><p>Avatar virtual · Video UGC</p></div><span class="pill">AVATAR IA</span></div>
+            <div class="project-info"><div><h3>Contenido para servicios</h3></div><span class="pill">AVATAR IA</span></div>
           </article>
           <article class="project reveal">
             <div class="media" data-video="videos/avatar-02.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 02</strong><small>Agregar video vertical</small></div></div>
-            <div class="project-info"><div><h3>Contenido para marca</h3><p>Avatar virtual · Video social</p></div><span class="pill">AVATAR IA</span></div>
+            <div class="project-info"><div><h3>Contenido para plataforma</h3></div><span class="pill">AVATAR IA</span></div>
+          </article>
+          <article class="project reveal">
+            <div class="media" data-video="videos/avatar-03.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 03</strong><small>Agregar video vertical</small></div></div>
+            <div class="project-info"><div><h3>Contenido para venta</h3></div><span class="pill">AVATAR IA</span></div>
+          </article>
+          <article class="project reveal">
+            <div class="media" data-video="videos/avatar-04.mp4"><div class="media-placeholder"><div class="play">▶</div><strong>Avatar UGC / 04</strong><small>Agregar video vertical</small></div></div>
+            <div class="project-info"><div><h3>Voz en off para redes</h3></div><span class="pill">AVATAR IA</span></div>
           </article>
         </div>
       </section>
@@ -936,6 +948,33 @@
     document.getElementById('year').textContent = new Date().getFullYear();
 
     // Si existe el archivo de video indicado, reemplaza automáticamente el espacio reservado.
+    // Menú superior: se oculta al bajar y reaparece al subir.
+    (function () {
+      const nav = document.querySelector('.nav');
+      if (!nav) return;
+      const links = nav.querySelector('.navlinks');
+      let lastY = window.scrollY;
+      let ticking = false;
+      function update() {
+        const y = Math.max(window.scrollY, 0);
+        const delta = y - lastY;
+        if (y < 80) {
+          nav.classList.remove('nav-hidden');
+        } else if (delta > 6) {
+          nav.classList.add('nav-hidden');
+          if (links) links.classList.remove('open');
+        } else if (delta < -6) {
+          nav.classList.remove('nav-hidden');
+        }
+        if (Math.abs(delta) > 6 || y < 80) lastY = y;
+        ticking = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+      }, { passive: true });
+      nav.addEventListener('focusin', () => nav.classList.remove('nav-hidden'));
+    })();
+
     // Videos de YouTube (no listados): se incrustan con iframe y cargan recién cuando se acerca el scroll.
     document.querySelectorAll('[data-youtube]').forEach(slot => {
       const id = slot.dataset.youtube;
